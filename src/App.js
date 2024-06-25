@@ -1,16 +1,15 @@
 import './App.css';
-import NavigationBar from './components/NavigationBar';
-import Hero from './components/Hero';
-import Tickets from './components/Tickets';
+import { BrowserRouter as Router } from 'react-router-dom';
 import Footer from './components/Footer';
+import Pages from './components/Pages';
 
 function App() {
   return (
     <>
-      <NavigationBar />
-      <Hero />
-      <Tickets />
-      <Footer />
+      <Router>
+        <Pages />
+        <Footer />
+      </Router>
     </>
   );
 }
