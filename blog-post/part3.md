@@ -1,22 +1,21 @@
-# Navigation in einer React App
+# Navigation in a React Static Web App
+After setting up a React app as a Static Web App (SWA) in part 1 of this tutorial and setting up the basic structure in part 2, I would like to write about navigation in a React app. I find this part quite important because I noticed in a personal project that navigation with React is not as straightforward as expected.
 
-Nachdem ich in part 1 dieses Tutorials eine React App als Static Web App (SWA) eingerichtet und in part 2 die grundlegende Struktur eingerichtet habe, möchte ich nun etwas zur Navigation in einer React App schreiben. Ich finde diesen Teil, für das, was ich machen möchte, recht wichtig, denn mir ist in einem privaten Projekt aufgefallen, dass die Navigation icht ganz so einfach funktioniert, wie gedacht.
+To follow along with my changes, you will need to clone my [GitHub Repository](https://github.com/jfellien/my-react-app-sample) for this tutorial.
 
-## Static Web App unter Azure
+## Static Web App on Azure
+The mentioned personal project was hosted as a GitHub Page for a while. Moving to Azure caused a negative side effect that was quickly resolved. Unfortunately, the documentation was not clear enough for me to understand.
 
-Das angesprochene private Projekt wurde ine Zeit lang als GitHub Page gehostet. Der Umzug nach Azure führte zu einem negativen Seiteneffekt, der sehr schnell gelöst werden konnte. Nur leider war die Dokumenatation nicht so, dass ich sie verstanden habe.
-Das Probelm ist, dass einen Static Web App mit React im Grunde eine dynamische Seite ist und ein sogenannter Deep Link, also ein Link, mit einem Pfad führt im Grunde ins Leere, da es die eigentliche Seite ja gar nicht richtig gibt. Okay, jetzt klinge ich genauso kompliziert, wie die SWA Doku. Ich mache es einfacher.
+The problem is that a Static Web App with React is essentially a dynamic page, and a deep link, which is a link with a path, leads to nowhere because there is no actual HTML page. Okay, now I sound as complicated as the SWA documentation. Let me simplify it.
 
-Stell dir vor, du hast eine Webseite, die unter der Domain https://myPage.org zu finden ist. Diese Seite hat ein Home, ein Impressum und einen GDPR Hinweis. Das sind im Grunde drei Seiten, die über die jeweilige Domain https://myPage.org mit den Pfaden /home, /imprint und /gdpr besucht werden kann. Unter React werden die Seiten meistens als Komponente angelegt und später in der App über einen 'Router' aufgerufen.
+Imagine you have a website that can be found at the domain https://myPage.org. This website has a home page, an imprint page, and a GDPR notice. These are essentially three pages that can be visited through the respective paths /home, /imprint, and /gdpr on the domain https://myPage.org. In React, these pages are usually created as components and later called through a 'Router' in the app.
 
-Hier ein Beispiel:
+Here's an example:
 
-```
 import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import Imprint from '../pages/Imprint';
 import GDPR from '../pages/GDPR';
-
 
 function Pages() {
     return (
@@ -30,39 +29,33 @@ function Pages() {
 }
 
 export default Pages;
-```
 
-Diese 'Pages' Komponente ist in der App registriert und läd die jeweile Komponente, je nach aufgerufener Route. Zu dumm nur, dass die generierte App nichts von diesen Routen weiß, der zu Grunde liegende Webserver auch nicht und HTML Seiten gibt es ebenfalls nicht. Das führt dazu, dass diese Deep Links /home, /imprint und /gdpr zu einer 404 Seite führen.
+This 'Pages' component is registered in the app and loads the respective component based on the requested route. Unfortunately, the generated app doesn't know about these routes, the underlying web server doesn't know either, and there are no HTML pages. This leads to these deep links /home, /imprint, and /gdpr resulting in a 404 page.
 
-Gelöst wird dies in einer SWA super einfach, indem in das root Verzeichnis der App eine Datei mit dem Namen 'staticwebapp.config.json' gelegt wird und dort der Eintrag:
+This is easily solved in a SWA by placing a file named 'staticwebapp.config.json' in the root directory of the app and adding the following:
 
-```
     "navigationFallback": {
         "rewrite": "/index.html"
     }
-```
 
-eingefügt wird. Nun sind alle Routen, die in der Pages Komponente konfiguriert sind, erreichbar.
-Ich finde das super einfach, im Vergleich, was bei den GitHub Pages nötig war.
+Now all the routes of the app are accessible. I find this much simpler compared to the GitHub Pages solution.
 
-Es lohnt sich übrigens die [Dokumentation](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration) zu dieser SWA Config anzuschauen. Es gibt noch viel mehr Möglichkeiten der Konfiguration.
+By the way, it's worth checking out the [documentation](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration) for more configuration options for this SWA config.
 
-## Navigation der App hinzufügen
-
-Meine Beispielapp wird neben der Seitennavigation auch Sektionen auf der Hauptseite haben, die angesprungen werden können. Das sieht dann im Konzept folgendermaße aus.
+## Adding App Navigation
+In addition to the page navigation, my sample app will have sections on the main page that can be jumped to. Here's how it looks in the concept:
 
 Home -> Page (Footer, NavigationBar)
 GDPR -> Page (Footer)
 Tickets -> Section (NavigationBar)
 
-Die Navigation erfolgt über Links. Diese sind jedoch in ihren Typen unterschiedlich. Einmal, wenn es um die Sektionen geht, dann handelt es sich um einen sogenannten Hashlink, ansonsten sind es klassische Links. Für die App bedeutet das, dass ein weitere Packages benötigt werden. Ich installiere sie mit:
+The navigation is done through links, but they have different types. When it comes to sections, they are called hash links, otherwise, they are classic links. For the app, this means that additional packages are required. I install them with:
 
 `> npm install --save react-router-dom`
 `> npm install --save react-router-hash-link`
 
-Jetzt steht mir die BrowserRouter Komponente von React zur Verfügung. Diese Komponente benötige ich in meiner Pages und der App Komponente. Die App Komponente erweitere ich um diesen BrowserRouter wie folgt:
+Now I have access to the BrowserRouter component from React. I need to use this component in my Pages and App components. I will update the App component as follows:
 
-```
 ...
 import { BrowserRouter as Router } from 'react-router-dom';
 ...
@@ -80,33 +73,27 @@ function App() {
   );
 }
 
-```
+Please do not apply these changes yet, as I am not finished with the App.js file. The NavigationBar, Hero, Tickets, and Footer components are still included here. I will rearrange the components to create a better structure.
 
-Bitte übernimm siede Änderungen noch nicht, ich bin mit der App.js Datei noch nicht fertig. Denn noch sind NavigationBar, Hero, Tickets und Footer hier enthalten. Die Komponenten sortiere ich noch um, sodass eine bessere Struktur entsteht.
+The Router now takes care of understanding the path in the URL or the hash link and then routing correctly.
 
-Der Router übernimmt nun die Aufgabe, den Pfad in der URL oder den HashLink zu verstehen, um dann das korrekte Routung zu machen.
-
-### Seitennavigation
-
-Ersteinmal richte ich mir meine Seitennavigation ein. Das bedeutet, dass im Footer zwei Links zu Unterseiten führen und bei den Unterseiten möchte ich, dass im Menü zur Hauptseite zurücknavigiert werden kann.
+### Page Navigation
+First, I will set up the page navigation. This means that in the footer, there will be two links to subpages, and on the subpages, I want the menu to navigate back to the main page.
 
 Footer -> Imprint
 Footer -> GDPR
 Imprint -> Home
 GDPR -> Home
 
-(Hinweis. Ich habe tailwindcss zum Projekt hinzugefügt, damit ich auf einfachem Weg Styling betreiben kann. :D
+(Note: I have added tailwindcss to the project to easily apply styling. :D
+Here is the guide I followed: [css with tailwind](https://tailwindcss.com/docs/guides/create-react-app))
 
-Hier findest du die Anleitung, die ich ausgeführt habe: [css mit tailwind](https://tailwindcss.com/docs/guides/create-react-app))
+As seen in the example above, I create a Pages component to manage the routes for the subpages.
 
-Wie oben schon im Beispiel zu sehen, lege ich mir eine Pages Komponente an, um die Routen für die Unterseiten zu verwalten.
-
-```
 import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import Imprint from '../pages/Imprint';
 import GDPR from '../pages/GDPR';
-
 
 function Pages() {
     return (
@@ -120,11 +107,9 @@ function Pages() {
 }
 
 export default Pages;
-```
 
-Du siehst, hier wird eine Home Page aufgerufen, wenn jemand die Webseite oder die den /Home Pfad aufruft. Diese Home Page übernimmt nun die Aufgabe der App Komponente und sieht so aus:
+As you can see, a Home page is called when someone visits the website or the /Home path. This Home page now takes over the role of the App component and looks like this:
 
-```
 import Hero from "../components/Hero";
 import NavigationBar from "../components/NavigationBar";
 import Tickets from "../components/Tickets";
@@ -140,11 +125,9 @@ function Home() {
 }
 
 export default Home;
-```
 
-Und die App Komponente sieht nun so aus:
+And the App component now looks like this:
 
-```
 import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Footer from './components/Footer';
@@ -162,45 +145,36 @@ function App() {
 }
 
 export default App;
-```
 
-In der App werden nun Pages und der Footer angezeigt. Die Pages können Home, GDPR oder Imprint sein.
+The App component now displays Pages and the Footer. The Pages can be Home, GDPR, or Imprint.
 
-### Hashnavigation
+### Hash Navigation
+If I only want to navigate between sections on a single page, I set up a hash navigation that refers to elements with a matching ID. For the Home page, the menu items Home and Tickets are involved.
 
-Wenn ich nur auf einer Seite zwischen den Sektionen navigieren möchte, richte ich mir eine Hashnavigation ein, die auf Elemente mit einer passenden ID verweist. Das sind für die Home Page in der Navigation die Menüitems Home und Tickets.
+In the NavigationBar, I have a div tag with the ID '#top'. I refer to it with a HashLink:
 
-In der NavigationBar habe ich ein div-Tag mit der ID '#top'. Darauf verweise ich mit einem HashLink:
-
-```
 <HashLink smooth to="#top">
     <div id="mnu-home" className="...">
         Home
     </div>
 </HashLink>
-```
 
-Dank des BrowserRouter weiß die App nun, dass ich auf der gleichen Seite zum element 'top' navigieren möchte und das smooth. ;) Das gleiche mache ich für die Ticket Sektion.
+Thanks to the BrowserRouter, the app now knows that I want to navigate to the 'top' element on the same page, and it does it smoothly. ;) I do the same for the Ticket section.
 
-```
 <HashLink id="mnu-tickets" smooth to="#tickets" className="...">
     Tickets
 </HashLink>
-```
 
-Die ID zu dieser Sektion ist natürlich in der Tickets Komponente.
+The ID for this section is, of course, in the Tickets component.
 
-```
 ...
     <section id="tickets" className="bg-gray-300">
 ...
-```
 
-Was aber nicht funktioniert, ist dass in den Pages die gleiche NavigationBar, wie in der Home Page verwendet wird. Der Grund ist einfach. Die HashLinks funktionieren nicht seitenübergreifend, daher brauche ich für die Pages eine eigene NavigationBar. Dafür habe ich mir eine Kopie von NavigationBar als PageNavigationBar angelegt und den HashLink zur Home Page in einen Link umgewandelt sowie den Ticket Item aus der NavigationBar gelöscht.
+But what doesn't work is using the same NavigationBar in the Pages as in the Home page. The reason is simple. Hash links don't work across pages, so I need a separate NavigationBar for the Pages. For this, I created a copy of NavigationBar called PageNavigationBar and converted the HashLink to the Home page into a Link, and removed the Ticket item from the NavigationBar.
 
-Als Finale füge ich die PageNavigationBar in meine Pages ein.
+Finally, I add the PageNavigationBar to my Pages.
 
-```
 Imprint.js:
 
 import PageNavigationBar from "../components/PageNavigationBar";
@@ -210,9 +184,10 @@ function Imprint() {
         <>
             <PageNavigationBar />
             ...
-
+}
 
 GDPR.js:
+
 import PageNavigationBar from "../components/PageNavigationBar";
 
 function GDPR() {
@@ -220,6 +195,6 @@ function GDPR() {
         <>
             <PageNavigationBar />
             ...
-```
+}
 
-Ich hoffe dir hat dieses Tutorial gefallen. Im nächsten und letzten Teil geht es um die Anbindung einer API meiner Static Web App.
+I hope you enjoyed this tutorial. In the next and final part, I will cover connecting an API to my Static Web App.
