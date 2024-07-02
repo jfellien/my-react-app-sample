@@ -3,6 +3,7 @@
   "configurations": {
     "my-sample": {
       "appLocation": ".",
+      "apiLocation": "api",
       "outputLocation": "build",
       "appBuildCommand": "npm run build",
       "run": "npm start",
